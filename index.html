@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Overlay</title>
+    <!-- Include Video.js CSS and JavaScript -->
+    <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet">
+    <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
+    <!-- Include Fabric.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.1/fabric.min.js"></script>
+</head>
+<body>
+    <input type="file" id="videoInput" accept="video/*">
+    <canvas id="overlayCanvas" width="640" height="360"></canvas>
+    <button id="drawButton">Draw Overlay</button>
+    <button id="saveButton">Save Image</button>
+    <img id="imageOverlay" src="" alt="Image Overlay" style="display: none;">
+
+    <script>
+        // Initialize the video player
+        const videoInput = document.getElementById('videoInput');
+        const overlayCanvas = new fabric.Canvas('overlayCanvas');
+        const drawButton = document.getElementById('drawButton');
+        const saveButton = document.getElementById('saveButton');
+        const imageOverlay = document.getElementById('imageOverlay');
+
+        // Event listener for the video input
+        videoInput.addEventListener('change', function (e) {
+            const videoFile = e.target.files[0];
+            if (videoFile) {
+                // Load and display the video
+                const video = videojs('overlayCanvas', {}, function () {
+                    this.src({ type: 'video/mp4', src: URL.createObjectURL(videoFile) });
+                    this.currentTime(this.duration() / 2); // Set to the middle frame
+                });
+            }
+        });
+
+        // Event listener for the "Draw Overlay" button
+        drawButton.addEventListener('click', function () {
+            // You can implement the code to draw the overlay using Fabric.js here
+        });
+
+        // Event listener for the "Save Image" button
+        saveButton.addEventListener('click', function () {
+            // Convert the canvas to a PNG image with a transparent background
+            const canvas = overlayCanvas.getElement();
+            const imageDataURL = canvas.toDataURL('image/png');
+
+            // Display the image overlay
+            imageOverlay.src = imageDataURL;
+            imageOverlay.style.display = 'block';
+
+            // You can save the imageDataURL for future use as an overlay
+        });
+    </script>
+</body>
+</html>

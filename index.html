@@ -2,8 +2,7 @@
 <html>
   <head>
     <title>Video Player with Overlay</title>
-    <style>
-    </style>
+    <style></style>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link
@@ -15,26 +14,32 @@
   </head>
   <body>
     <h1 class="p-10">Video Player with Overlay</h1>
-<div class="relative">
-  <!-- Video element to display the selected video -->
-  <video class="z-1 absolute top-0 left-0 m-10" id="videoPlayer" controls autoplay></video>
+    <div class="relative">
+      <!-- Video element to display the selected video -->
+      <video
+        class="z-1 absolute top-0 left-0 m-10"
+        id="videoPlayer"
+        autoplay
+        controls
+      ></video>
 
-  <!-- Canvas element for drawing overlay -->
-  <canvas class="z-2 absolute top-0 left-0 m-10" id="overlayCanvas"></canvas>
-</div>
+      <!-- Canvas element for drawing overlay -->
+      <canvas
+        class="z-2 absolute top-0 left-0 m-10"
+        id="overlayCanvas"
+      ></canvas>
+    </div>
 
-<div class="z-5">
-
-
-    <!-- Input for selecting a video file -->
-    <input type="file" id="videoFile" accept="video/*" />
-    <!-- Button to download the overlay as PNG -->
-    <button id="downloadOverlay">Download Overlay as PNG</button>
-    <!-- Slider for brush thickness -->
-    <label for="brushThickness">Brush Thickness:</label>
-    <input type="range" id="brushThickness" min="1" max="100" value="50" />
-
-</div>
+    <div class="z-5">
+      <!-- Input for selecting a video file -->
+      <input type="file" id="videoFile" accept="video/*" />
+      <!-- Button to download the overlay as PNG -->
+      <button id="downloadOverlay">Download Overlay as PNG</button>
+      <!-- Slider for brush thickness -->
+      <label for="brushThickness">Brush Thickness:</label>
+      <input type="range" id="brushThickness" min="1" max="100" value="50" />
+      <button id="toggleOverlayButton">Toggle Overlay</button>
+    </div>
 
     <script>
       // Get references to the input, video, canvas, and download button
@@ -121,6 +126,14 @@
       brushThicknessInput.addEventListener("input", function () {
         ctx.lineWidth = this.value;
         ctx.lineHeight = this.value;
+      });
+
+      const toggleOverlayButton = document.getElementById(
+        "toggleOverlayButton"
+      );
+
+      toggleOverlayButton.addEventListener("click", function () {
+        overlayCanvas.classList.toggle("hidden");
       });
     </script>
   </body>

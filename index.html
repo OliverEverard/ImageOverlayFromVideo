@@ -3,32 +3,29 @@
   <head>
     <title>Video Player with Overlay</title>
     <style>
-      /* CSS for the canvas border */
-      #overlayCanvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        /* ... (other styles) */
-      }
     </style>
-       <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 
-       <link
-         href="https://cdn.jsdelivr.net/npm/daisyui@3.8.1/dist/full.css"
-         rel="stylesheet"
-         type="text/css"
-       />
-       <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@3.8.1/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
     <h1 class="p-10">Video Player with Overlay</h1>
+<div class="relative">
+  <!-- Video element to display the selected video -->
+  <video class="z-1 absolute top-0 left-0 m-10" id="videoPlayer" controls autoplay></video>
 
-    <!-- Video element to display the selected video -->
-    <video id="videoPlayer" controls autoplay></video>
+  <!-- Canvas element for drawing overlay -->
+  <canvas class="z-2 absolute top-0 left-0 m-10" id="overlayCanvas"></canvas>
+</div>
 
-    <!-- Canvas element for drawing overlay -->
-    <canvas id="overlayCanvas"></canvas>
+<div class="z-5">
+
+
     <!-- Input for selecting a video file -->
     <input type="file" id="videoFile" accept="video/*" />
     <!-- Button to download the overlay as PNG -->
@@ -36,6 +33,8 @@
     <!-- Slider for brush thickness -->
     <label for="brushThickness">Brush Thickness:</label>
     <input type="range" id="brushThickness" min="1" max="100" value="50" />
+
+</div>
 
     <script>
       // Get references to the input, video, canvas, and download button
@@ -88,7 +87,6 @@
         ctx.strokeStyle = "black"; // You can customize the overlay appearance here
         ctx.lineJoin = "round";
         ctx.lineCap = "round";
-        
 
         // Draw a line from the last known position to the current mouse position
         ctx.beginPath();

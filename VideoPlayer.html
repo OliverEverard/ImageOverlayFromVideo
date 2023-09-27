@@ -2,12 +2,6 @@
 <html>
 <head>
     <title>Video Player with Overlay</title>
-    <style>
-        /* CSS for the canvas border */
-        #overlayCanvas {
-            border: 2px solid black; /* You can customize the border style here */
-        }
-    </style>
 </head>
 <body>
     <h1>Video Player with Overlay</h1>
@@ -21,7 +15,7 @@
     <!-- Canvas element for drawing overlay -->
     <canvas id="overlayCanvas"></canvas>
     
-    <!-- Button to download the overlay as PNG -->
+    <!-- Button to download the overlay as a PNG -->
     <button id="downloadOverlay">Download Overlay as PNG</button>
     
     <script>
@@ -34,10 +28,8 @@
         // Initialize the canvas context
         const ctx = overlayCanvas.getContext("2d");
         
-        // Initialize variables to track drawing state
+        // Initialize a variable to track if the user is drawing
         let isDrawing = false;
-        let lastX = 0;
-        let lastY = 0;
         
         // Add an event listener to the input for when a file is selected
         videoFileInput.addEventListener("change", function() {
@@ -50,15 +42,9 @@
         });
         
         // Add event listeners for drawing on the canvas
-        overlayCanvas.addEventListener("mousedown", (e) => {
-            isDrawing = true;
-            // Get the initial mouse position
-            [lastX, lastY] = [e.clientX - overlayCanvas.getBoundingClientRect().left, e.clientY - overlayCanvas.getBoundingClientRect().top];
-        });
-        
-        overlayCanvas.addEventListener("mousemove", draw);
+        overlayCanvas.addEventListener("mousedown", () => isDrawing = true);
         overlayCanvas.addEventListener("mouseup", () => isDrawing = false);
-        overlayCanvas.addEventListener("mouseout", () => isDrawing = false);
+        overlayCanvas.addEventListener("mousemove", draw);
         
         // Function to draw on the canvas
         function draw(e) {
@@ -67,15 +53,10 @@
             ctx.lineWidth = 5;
             ctx.strokeStyle = "red"; // You can customize the overlay appearance here
             
-            // Draw a line from the last known position to the current mouse position
             ctx.beginPath();
-            ctx.moveTo(lastX, lastY);
-            const [x, y] = [e.clientX - overlayCanvas.getBoundingClientRect().left, e.clientY - overlayCanvas.getBoundingClientRect().top];
-            ctx.lineTo(x, y);
+            ctx.moveTo(e.clientX - overlayCanvas.getBoundingClientRect().left, e.clientY - overlayCanvas.getBoundingClientRect().top);
+            ctx.lineTo(e.clientX - overlayCanvas.getBoundingClientRect().left, e.clientY - overlayCanvas.getBoundingClientRect().top);
             ctx.stroke();
-            
-            // Update the last known position
-            [lastX, lastY] = [x, y];
         }
         
         // Add an event listener to the download button

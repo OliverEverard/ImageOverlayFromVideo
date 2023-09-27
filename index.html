@@ -1,96 +1,121 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Video Player with Overlay</title>
     <style>
-        /* CSS for the canvas border */
-        #overlayCanvas {
-            border: 2px solid black; /* You can customize the border style here */
-        }
+      /* CSS for the canvas border */
+      #overlayCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        /* ... (other styles) */
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Video Player with Overlay</h1>
-    
-    <!-- Input for selecting a video file -->
-    <input type="file" id="videoFile" accept="video/*">
-    
+
     <!-- Video element to display the selected video -->
     <video id="videoPlayer" controls autoplay></video>
-    
+
     <!-- Canvas element for drawing overlay -->
     <canvas id="overlayCanvas"></canvas>
-    
+    <!-- Input for selecting a video file -->
+    <input type="file" id="videoFile" accept="video/*" />
     <!-- Button to download the overlay as PNG -->
     <button id="downloadOverlay">Download Overlay as PNG</button>
-    
+    <!-- Slider for brush thickness -->
+    <label for="brushThickness">Brush Thickness:</label>
+    <input type="range" id="brushThickness" min="1" max="100" value="50" />
+
     <script>
-        // Get references to the input, video, canvas, and download button
-        const videoFileInput = document.getElementById("videoFile");
-        const videoPlayer = document.getElementById("videoPlayer");
-        const overlayCanvas = document.getElementById("overlayCanvas");
-        const downloadOverlayButton = document.getElementById("downloadOverlay");
-        
-        // Initialize the canvas context
-        const ctx = overlayCanvas.getContext("2d");
-        
-        // Initialize variables to track drawing state
-        let isDrawing = false;
-        let lastX = 0;
-        let lastY = 0;
-        
-        // Add an event listener to the input for when a file is selected
-        videoFileInput.addEventListener("change", function() {
-            const selectedVideo = videoFileInput.files[0];
-            
-            if (selectedVideo) {
-                // Set the video source to the selected file
-                videoPlayer.src = URL.createObjectURL(selectedVideo);
-            }
-        });
-        
-        // Add event listeners for drawing on the canvas
-        overlayCanvas.addEventListener("mousedown", (e) => {
-            isDrawing = true;
-            // Get the initial mouse position
-            [lastX, lastY] = [e.clientX - overlayCanvas.getBoundingClientRect().left, e.clientY - overlayCanvas.getBoundingClientRect().top];
-        });
-        
-        overlayCanvas.addEventListener("mousemove", draw);
-        overlayCanvas.addEventListener("mouseup", () => isDrawing = false);
-        overlayCanvas.addEventListener("mouseout", () => isDrawing = false);
-        
-        // Function to draw on the canvas
-        function draw(e) {
-            if (!isDrawing) return;
-            
-            ctx.lineWidth = 5;
-            ctx.strokeStyle = "red"; // You can customize the overlay appearance here
-            
-            // Draw a line from the last known position to the current mouse position
-            ctx.beginPath();
-            ctx.moveTo(lastX, lastY);
-            const [x, y] = [e.clientX - overlayCanvas.getBoundingClientRect().left, e.clientY - overlayCanvas.getBoundingClientRect().top];
-            ctx.lineTo(x, y);
-            ctx.stroke();
-            
-            // Update the last known position
-            [lastX, lastY] = [x, y];
+      // Get references to the input, video, canvas, and download button
+      const videoFileInput = document.getElementById("videoFile");
+      const videoPlayer = document.getElementById("videoPlayer");
+      const overlayCanvas = document.getElementById("overlayCanvas");
+      const downloadOverlayButton = document.getElementById("downloadOverlay");
+
+      // Initialize the canvas context
+      const ctx = overlayCanvas.getContext("2d");
+
+      // Initialize variables to track drawing state
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      // Add an event listener to the input for when a file is selected
+      videoFileInput.addEventListener("change", function () {
+        const selectedVideo = videoFileInput.files[0];
+
+        if (selectedVideo) {
+          // Set the video source to the selected file
+          videoPlayer.src = URL.createObjectURL(selectedVideo);
+
+          videoPlayer.onloadedmetadata = function () {
+            overlayCanvas.width = videoPlayer.videoWidth;
+            overlayCanvas.height = videoPlayer.videoHeight;
+          };
         }
+      });
+
+      // Add event listeners for drawing on the canvas
+      overlayCanvas.addEventListener("mousedown", (e) => {
+        isDrawing = true;
+        // Get the initial mouse position
+        [lastX, lastY] = [
+          e.clientX - overlayCanvas.getBoundingClientRect().left,
+          e.clientY - overlayCanvas.getBoundingClientRect().top,
+        ];
+      });
+
+      overlayCanvas.addEventListener("mousemove", draw);
+      overlayCanvas.addEventListener("mouseup", () => (isDrawing = false));
+      overlayCanvas.addEventListener("mouseout", () => (isDrawing = false));
+
+      // Function to draw on the canvas
+      function draw(e) {
+        if (!isDrawing) return;
+
+        ctx.strokeStyle = "black"; // You can customize the overlay appearance here
+        ctx.lineJoin = "round";
+        ctx.lineCap = "round";
         
-        // Add an event listener to the download button
-        downloadOverlayButton.addEventListener("click", function() {
-            // Convert the overlay canvas to a PNG image
-            const overlayImage = overlayCanvas.toDataURL("image/png");
-            
-            // Create a link to download the PNG
-            const downloadLink = document.createElement("a");
-            downloadLink.href = overlayImage;
-            downloadLink.download = "overlay.png";
-            
-            // Trigger a click event to start the download
-            downloadLink.click();
-        });
+
+        // Draw a line from the last known position to the current mouse position
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        const [x, y] = [
+          e.clientX - overlayCanvas.getBoundingClientRect().left,
+          e.clientY - overlayCanvas.getBoundingClientRect().top,
+        ];
+        ctx.lineTo(x, y);
+        ctx.stroke();
+
+        // Update the last known position
+        [lastX, lastY] = [x, y];
+      }
+
+      // Add an event listener to the download button
+      downloadOverlayButton.addEventListener("click", function () {
+        // Convert the overlay canvas to a PNG image
+        const overlayImage = overlayCanvas.toDataURL("image/png");
+
+        // Create a link to download the PNG
+        const downloadLink = document.createElement("a");
+        downloadLink.href = overlayImage;
+        downloadLink.download = "overlay.png";
+
+        // Trigger a click event to start the download
+        downloadLink.click();
+      });
+
+      const brushThicknessInput = document.getElementById("brushThickness");
+
+      brushThicknessInput.addEventListener("input", function () {
+        ctx.lineWidth = this.value;
+        ctx.lineHeight = this.value;
+      });
     </script>
-</body>
+  </body>
 </html>

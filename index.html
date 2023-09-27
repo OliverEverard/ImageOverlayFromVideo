@@ -2,32 +2,67 @@
 <html>
   <head>
     <title>Video Player with Overlay</title>
-    <style>
-      /* CSS for the canvas border */
-      #overlayCanvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        /* ... (other styles) */
-      }
-    </style>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@3.8.1/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    <h1>Video Player with Overlay</h1>
+  <body class="bg-gray-100">
+    <div class="container mx-auto py-8">
+      <h1 class="text-3xl font-bold mb-4">Video Player with Overlay</h1>
 
-    <!-- Video element to display the selected video -->
-    <video id="videoPlayer" controls autoplay></video>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <!-- Video element to display the selected video -->
+          <video
+            id="videoPlayer"
+            class="w-full rounded-lg shadow-lg"
+            controls
+            autoplay
+          ></video>
 
-    <!-- Canvas element for drawing overlay -->
-    <canvas id="overlayCanvas"></canvas>
-    <!-- Input for selecting a video file -->
-    <input type="file" id="videoFile" accept="video/*" />
-    <!-- Button to download the overlay as PNG -->
-    <button id="downloadOverlay">Download Overlay as PNG</button>
-    <!-- Slider for brush thickness -->
-    <label for="brushThickness">Brush Thickness:</label>
-    <input type="range" id="brushThickness" min="1" max="100" value="50" />
+          <!-- Canvas element for drawing overlay -->
+          <canvas
+            id="overlayCanvas"
+            class="absolute top-0 left-0 w-full h-full"
+          ></canvas>
+        </div>
+
+        <div>
+          <!-- Input for selecting a video file -->
+          <input
+            type="file"
+            id="videoFile"
+            accept="video/*"
+            class="mb-4"
+          />
+          <!-- Button to download the overlay as PNG -->
+          <button
+            id="downloadOverlay"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Download Overlay as PNG
+          </button>
+          <!-- Slider for brush thickness -->
+          <label for="brushThickness" class="block mt-4 font-bold">
+            Brush Thickness:
+          </label>
+          <input
+            type="range"
+            id="brushThickness"
+            min="1"
+            max="100"
+            value="50"
+            class="w-full"
+          />
+        </div>
+      </div>
+    </div>
 
     <script>
       // Get references to the input, video, canvas, and download button
@@ -80,7 +115,6 @@
         ctx.strokeStyle = "black"; // You can customize the overlay appearance here
         ctx.lineJoin = "round";
         ctx.lineCap = "round";
-        
 
         // Draw a line from the last known position to the current mouse position
         ctx.beginPath();
